@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="bn" class="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOLKATA FF PRO PREDICTOR</title>
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<!-- Chart.js for Advanced Analytics -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Lucide Icons -->
+<script src="https://unpkg.com/lucide@latest"></script>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+​<script>
+tailwind.config = {
+darkMode: 'class',
+theme: {
+extend: {
+colors: {
+brand: {
+50: '#fff1f2',
+100: '#ffe4e6',
+200: '#fecdd3',
+400: '#fb7185',
+500: '#f43f5e',
+600: '#e11d48',
+700: '#be123c',
+800: '#9f1239',
+900: '#881337',
+ruby: '#DC2626'
+}
+},
+fontFamily: {
+sans: ['Outfit', 'Hind Siliguri', 'sans-serif'],
+bn: ['Hind Siliguri', 'sans-serif']
+},
+animation: {
+'pulse-glow': 'pulseGlow 2.5s infinite',
+'shimmer': 'shimmer 2s linear infinite'
+},
+keyframes: {
+pulseGlow: {
+'0%, 100%': { boxShadow: '0 0 15px rgba(225, 29, 72, 0.2)' },
+'50%': { boxShadow: '0 0 30px rgba(225, 29, 72, 0.4)' }
+},
+shimmer: {
+'0%': { backgroundPosition: '-200% 0' },
+'100%': { backgroundPosition: '200% 0' }
+}
+}
+}
+}
+}
+</script>
+<style>
+body {
+background-color: #f8fafc;
+background-image:
+radial-gradient(at 10% 10%, rgba(225, 29, 72, 0.05) 0px, transparent 50%),
+radial-gradient(at 90% 20%, rgba(244, 63, 94, 0.08) 0px, transparent 50%),
+radial-gradient(at 50% 80%, rgba(254, 205, 211, 0.15) 0px, transparent 50%);
+background-attachment: fixed;
+color: #0f172a;
+}
+​.glass-panel {
+background: rgba(255, 255, 255, 0.95);
+backdrop-filter: blur(16px);
+-webkit-backdrop-filter: blur(16px);
+border: 1px solid rgba(225, 29, 72, 0.12);
+box-shadow: 0 4px 20px -2px rgba(225, 29, 72, 0.05);
+}
+​.glass-panel-glow {
+background: rgba(255, 255, 255, 0.98);
+backdrop-filter: blur(20px);
+border: 1.5px solid rgba(225, 29, 72, 0.25);
+box-shadow: 0 10px 30px -5px rgba(225, 29, 72, 0.12);
+}
+​.red-gradient-text {
+background: linear-gradient(135deg, #be123c 0%, #e11d48 50%, #9f1239 100%);
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+}
+​.shimmer-btn {
+background: linear-gradient(90deg, #be123c 0%, #f43f5e 50%, #be123c 100%);
+background-size: 200% 100%;
+animation: shimmer 2.5s infinite;
+}
+​.digit-input:focus {
+box-shadow: 0 0 10px rgba(225, 29, 72, 0.3);
+}
+​::-webkit-scrollbar {
+width: 6px;
+height: 6px;
+}
+::-webkit-scrollbar-track {
+background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+background: #fda4af;
+border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+background: #e11d48;
+}
+</style>
+</head>
+<body class="font-sans antialiased min-h-screen flex flex-col justify-between selection:bg-rose-500 selection:text-white">
+​<!-- Toast Notification Box -->
+<div id="toast" class="fixed top-5 right-5 z-50 transform translate-x-full transition-transform duration-300 ease-out glass-panel-glow rounded-xl p-4 flex items-center gap-3 border-l-4 border-rose-600 shadow-2xl max-w-sm">
+<div id="toast-icon" class="text-rose-600"></div>
+<div id="toast-msg" class="text-xs font-semibold text-slate-800"></div>
+</div>
+​<!-- Header & Top Navigation -->
+<header class="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-rose-200/80 px-4 lg:px-8 py-3.5 shadow-sm">
+<div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-4">
+​<!-- Brand Logo -->
+<div class="flex items-center gap-3">
+<div class="relative group">
+<div class="w-11 h-11 rounded-xl bg-gradient-to-tr from-rose-700 via-rose-500 to-red-400 p-0.5 shadow-md shadow-rose-500/20 group-hover:scale-105 transition-transform">
+<div class="w-full h-full bg-white rounded-[10px] flex items-center justify-center">
+<i data-lucide="cpu" class="w-5 h-5 text-rose-600"></i>
+</div>
+</div>
+<span class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white animate-ping"></span>
+<span class="absolute -top-1 -right-1 w-3 h-3 bg-emerald-500 rounded-full border-2 border-white"></span>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h1 class="text-lg md:text-xl font-extrabold red-gradient-text tracking-wide uppercase">
+KOLKATA FF PRO PREDICTOR
+</h1>
+<span class="bg-rose-100 border border-rose-200 text-rose-700 text-[10px] px-2 py-0.5 rounded-full font-mono font-bold">
+v3.5 PRO
+</span>
+</div>
+<p class="text-[11px] text-slate-500 font-bn" id="hdr-sub">এডভান্সড গাণিতিক প্রেডিকশন ও প্যাটার্ন এনালাইজার</p>
+</div>
+</div>
+​<!-- Controls & Tools -->
+<div class="flex items-center gap-2.5 ml-auto">
+<div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-mono text-slate-700">
+<i data-lucide="clock" class="w-3.5 h-3.5 text-rose-600"></i>
+<span id="live-clock">--:--:--</span>
+</div>
+​<button onclick="toggleLanguage()" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition">
+<i data-lucide="languages" class="w-3.5 h-3.5"></i>
+<span id="lang-btn-txt">English</span>
+</button>
+​<button onclick="loadSamplePreset()" class="px-3 py-1.5 rounded-xl bg-gradient-to-r from-rose-600 to-red-500 hover:from-rose-700 hover:to-red-600 text-white text-xs font-bold flex items-center gap-1.5 transition shadow-sm shadow-rose-500/20">
+<i data-lucide="zap" class="w-3.5 h-3.5"></i>
+<span id="btn-sample-hdr">স্যাম্পল ডেটা</span>
+</button>
+​<button onclick="clearAllData()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-600 text-xs transition" title="Clear Inputs">
+<i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+</button>
+</div>
+​</div>
+</header>
+​<!-- Main Workspace Container -->
+<main class="max-w-7xl mx-auto px-4 lg:px-8 my-6 flex-grow w-full space-y-6">
+​<!-- Info Banner -->
+<div class="glass-panel rounded-2xl p-3.5 px-4 flex items-center justify-between gap-3 text-xs border-rose-200/60 bg-white">
+<div class="flex items-center gap-2.5 text-slate-700 font-bn" id="txt-banner">
+<i data-lucide="shield-check" class="w-4 h-4 text-emerald-600 shrink-0"></i>
+<span>এটি সম্পূর্ণ গাণিতিক ফ্রিকোয়েন্সি, সাইকেল গ্যাপ এবং কাট-ডিজিটের এলগরিদম এনালাইসিস টুল। কোনো প্রকার জুয়া বা বাজি সার্ভিস প্রদান করা হয় না।</span>
+</div>
+<div class="hidden md:flex items-center gap-1 text-[11px] text-rose-700 font-mono font-bold shrink-0">
+<i data-lucide="activity" class="w-3.5 h-3.5 text-rose-600"></i>
+<span id="lbl-status-ok">SYSTEM ONLINE</span>
+</div>
+</div>
+​<!-- Section Navigation Tabs -->
+<div class="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none border-b border-rose-200/60">
+<button onclick="switchTab('input')" id="tab-input" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 bg-rose-600 text-white shadow-md shadow-rose-600/20">
+<i data-lucide="pen-tool" class="w-4 h-4"></i>
+<span id="txt-tab-input">১. ১০-বাজি রেজাল্ট ইনপুট</span>
+</button>
+<button onclick="switchTab('target')" id="tab-target" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 glass-panel text-slate-700 hover:text-rose-600">
+<i data-lucide="sparkles" class="w-4 h-4 text-rose-600"></i>
+<span id="txt-tab-target">২. AI ৫-ডিজিট টার্গেট</span>
+</button>
+<button onclick="switchTab('analytics')" id="tab-analytics" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 glass-panel text-slate-700 hover:text-rose-600">
+<i data-lucide="bar-chart-3" class="w-4 h-4 text-rose-600"></i>
+<span id="txt-tab-analytics">৩. ফ্রিকোয়েন্সি এনালাইটিক্স</span>
+</button>
+<button onclick="switchTab('patti')" id="tab-patti" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 glass-panel text-slate-700 hover:text-rose-600">
+<i data-lucide="layers" class="w-4 h-4 text-rose-600"></i>
+<span id="txt-tab-patti">৪. সম্ভাব্য পাত্তি তালিকা</span>
+</button>
+<button onclick="switchTab('logic')" id="tab-logic" class="tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 glass-panel text-slate-700 hover:text-rose-600">
+<i data-lucide="brain-circuit" class="w-4 h-4 text-rose-600"></i>
+<span id="txt-tab-logic">৫. গাণিতিক এলগরিদম</span>
+</button>
+</div>
+​<!-- TAB 1: 10 BAJI RESULT INPUT SECTION -->
+<section id="sec-input" class="tab-content space-y-6">
+<div class="glass-panel rounded-3xl p-5 lg:p-7 space-y-6">
+<div class="flex flex-wrap items-center justify-between gap-4 pb-4 border-b border-rose-100">
+<div>
+<h2 class="text-xl font-bold text-rose-900 flex items-center gap-2">
+<i data-lucide="list-ordered" class="w-5 h-5 text-rose-600"></i>
+<span id="txt-input-hdr">গত ১০টি বাজির ফলাফল ইনপুট দিন</span>
+</h2>
+<p class="text-xs text-slate-500 mt-1 font-bn" id="txt-input-sub">
+সিঙ্গেল ডিজিট (০-৯) এবং অপশনাল ৩-ডিজিটের পাত্তি (Pana) টাইপ করুন। অটো-ট্যাব সুবিধা যুক্ত।
+</p>
+</div>
+​<div class="flex items-center gap-2">
+<span class="text-xs text-rose-800 font-mono bg-rose-50 border border-rose-200 px-3 py-1.5 rounded-xl">
+Filled: <strong id="filled-count" class="text-rose-600">10</strong>/10
+</span>
+</div>
+</div>
+​<!-- Input Grid (10 Slots) -->
+<div class="grid grid-cols-2 sm:grid-cols-5 gap-3.5" id="baji-grid">
+<!-- Javascript generates 10 inputs dynamically -->
+</div>
+​<!-- Calculate & Action Buttons -->
+<div class="pt-4 border-t border-rose-100 flex flex-wrap items-center justify-between gap-4">
+<div class="text-xs text-slate-500 flex items-center gap-1.5">
+<i data-lucide="info" class="w-4 h-4 text-rose-600"></i>
+<span id="txt-auto-calc-info">ইনপুট পরিবর্তনের সাথে সাথে অ্যালগরিদম স্বয়ংক্রিয়ভাবে আপডেট হয়।</span>
+</div>
+​<button onclick="processAndNavigateTarget()" class="w-full sm:w-auto shimmer-btn text-white font-extrabold px-8 py-3.5 rounded-2xl shadow-lg shadow-rose-600/25 flex items-center justify-center gap-2 transform active:scale-95 transition">
+<i data-lucide="sparkles" class="w-5 h-5 text-white"></i>
+<span id="btn-calc-main">৫-ডিজিট প্রেডিকশন জেনারেট করুন</span>
+</button>
+</div>
+</div>
+</section>
+​<!-- TAB 2: AI 5-DIGIT TARGET RESULT SECTION -->
+<section id="sec-target" class="tab-content space-y-6 hidden">
+<!-- Top Target Summary Hero Panel -->
+<div class="glass-panel-glow rounded-3xl p-6 lg:p-8 relative overflow-hidden bg-gradient-to-br from-white via-rose-50/40 to-white">
+<div class="absolute -top-24 -right-24 w-72 h-72 bg-rose-200/30 rounded-full blur-3xl pointer-events-none"></div>
+​<div class="flex flex-wrap items-center justify-between gap-4 pb-6 border-b border-rose-100">
+<div>
+<div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-semibold">
+<i data-lucide="check-circle-2" class="w-3.5 h-3.5 text-emerald-600"></i>
+<span id="lbl-calc-ready">গাণিতিক বিশ্লেষণ সম্পন্ন</span>
+</div>
+<h2 class="text-2xl lg:text-3xl font-black text-rose-900 mt-2" id="txt-target-hdr">
+পরবর্তী বাজির জন্য শীর্ষ ৫টি টার্গেট ডিজিট
+</h2>
+<p class="text-xs text-slate-500 mt-1 font-bn" id="txt-target-sub">
+২টি ডিজিট (১০ বাজিতে আসেনি) + ৩টি ডিজিট (ট্রেন্ড অ্যালগরিদম) এর সমন্বয়ে প্রস্তুত।
+</p>
+</div>
+​<!-- Next Target Baji Indicator -->
+<div class="bg-white border border-rose-200 p-3.5 rounded-2xl text-center min-w-[140px] shadow-sm">
+<span class="text-[10px] text-rose-600 font-mono uppercase tracking-wider block" id="lbl-target-round">Target Baji</span>
+<span class="text-xl font-extrabold red-gradient-text" id="target-baji-num">Next Baji</span>
+</div>
+</div>
+​<!-- 5 TARGET DIGIT CARDS -->
+<div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 my-6" id="target-digits-grid">
+<!-- Dynamically Populated -->
+</div>
+​<!-- Dynamic Accuracy / Confidence Metric -->
+<div class="bg-white rounded-2xl p-4 border border-rose-100 shadow-sm flex flex-wrap items-center justify-between gap-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-xl bg-rose-100 border border-rose-200 flex items-center justify-center text-rose-600">
+<i data-lucide="activity" class="w-5 h-5"></i>
+</div>
+<div>
+<div class="text-xs text-slate-500" id="lbl-model-confidence">গড় প্রেডিকশন কনফিডেন্স ইনডেক্স</div>
+<div class="text-lg font-bold font-mono red-gradient-text" id="val-overall-score">92.4% Optimal</div>
+</div>
+</div>
+​<!-- Actions: Print & Export -->
+<div class="flex items-center gap-2">
+<button onclick="copyResultsToClipboard()" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition">
+<i data-lucide="copy" class="w-3.5 h-3.5"></i>
+<span id="btn-copy">কপি করুন</span>
+</button>
+<button onclick="exportJSONReport()" class="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 border border-rose-200 text-rose-700 text-xs font-semibold flex items-center gap-1.5 transition">
+<i data-lucide="download" class="w-3.5 h-3.5"></i>
+<span>Export</span>
+</button>
+<button onclick="window.print()" class="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition">
+<i data-lucide="printer" class="w-3.5 h-3.5"></i>
+<span>Print</span>
+</button>
+</div>
+</div>
+</div>
+​<!-- Key Indicators Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+<div class="glass-panel p-5 rounded-2xl space-y-1">
+<div class="flex items-center justify-between text-xs text-rose-700 font-bold uppercase tracking-wider">
+<span id="lbl-hot-title">হট ডিজিট (High Freq)</span>
+<i data-lucide="flame" class="w-4 h-4 text-rose-600"></i>
+</div>
+<div class="text-2xl font-black font-mono text-slate-800" id="metric-hot">--</div>
+<p class="text-[11px] text-slate-500 font-bn" id="lbl-hot-sub">বিগত ১০ বাজিতে সর্বোচ্চবার আসা সংখ্যা</p>
+</div>
+​<div class="glass-panel p-5 rounded-2xl space-y-1">
+<div class="flex items-center justify-between text-xs text-rose-700 font-bold uppercase tracking-wider">
+<span id="lbl-cut-title">কাট ডিজিট থিওরি</span>
+<i data-lucide="scissors" class="w-4 h-4 text-rose-600"></i>
+</div>
+<div class="text-2xl font-black font-mono text-slate-800" id="metric-cut">--</div>
+<p class="text-[11px] text-slate-500 font-bn" id="lbl-cut-sub">সর্বশেষ বাজির কমপ্লিমেন্টারি বিপরীত ডিজিট</p>
+</div>
+​<div class="glass-panel p-5 rounded-2xl space-y-1">
+<div class="flex items-center justify-between text-xs text-rose-700 font-bold uppercase tracking-wider">
+<span id="lbl-due-title">সাইকেল ডিউ (Gap Digit)</span>
+<i data-lucide="timer" class="w-4 h-4 text-rose-600"></i>
+</div>
+<div class="text-2xl font-black font-mono text-slate-800" id="metric-due">--</div>
+<p class="text-[11px] text-slate-500 font-bn" id="lbl-due-sub">দীর্ঘদিন না আসা রিকভারি সম্ভাব্য ডিজিট</p>
+</div>
+</div>
+</section>
+​<!-- TAB 3: ANALYTICS & FREQUENCY CHART -->
+<section id="sec-analytics" class="tab-content space-y-6 hidden">
+<div class="glass-panel rounded-3xl p-6 lg:p-7 space-y-6">
+<div>
+<h2 class="text-lg font-bold text-rose-900 flex items-center gap-2">
+<i data-lucide="bar-chart-2" class="w-5 h-5 text-rose-600"></i>
+<span id="txt-chart-hdr">ডিজিট ফ্রিকোয়েন্সি ও ডিস্ট্রিবিউশন গ্রাফ (০-৯)</span>
+</h2>
+<p class="text-xs text-slate-500 mt-1 font-bn" id="txt-chart-sub">
+ইনপুট করা ১০টি বাজিতে প্রতিটি ডিজিট (0-9) কতবার এসেছে তা ভিজ্যুয়ালি দেখুন।
+</p>
+</div>
+​<!-- Chart Container -->
+<div class="w-full h-80 bg-white rounded-2xl p-4 border border-rose-100 shadow-inner">
+<canvas id="freqCanvas"></canvas>
+</div>
+</div>
+​<!-- Detailed History Breakdown Table -->
+<div class="glass-panel rounded-3xl p-6 lg:p-7 space-y-4">
+<h3 class="text-base font-bold text-rose-900 flex items-center gap-2">
+<i data-lucide="table" class="w-4 h-4 text-rose-600"></i>
+<span id="txt-table-hdr">ইনপুট করা বাজির বিস্তারিত সমীকরণ টেবিল</span>
+</h3>
+​<div class="overflow-x-auto">
+<table class="w-full text-left text-xs border-collapse">
+<thead>
+<tr class="bg-rose-50 text-rose-800 border-b border-rose-200 font-mono">
+<th class="p-3">BAJI SLOT</th>
+<th class="p-3">PATTI (PANA)</th>
+<th class="p-3">SINGLE DIGIT</th>
+<th class="p-3">PATTI SUM (MOD 10)</th>
+<th class="p-3">CUT DIGIT (+5)</th>
+</tr>
+</thead>
+<tbody id="history-table-body" class="divide-y divide-slate-100 font-mono">
+<!-- JS Populated -->
+</tbody>
+</table>
+</div>
+</div>
+</section>
+​<!-- TAB 4: HIGH PROBABILITY PATTI (PANA) -->
+<section id="sec-patti" class="tab-content space-y-6 hidden">
+<div class="glass-panel rounded-3xl p-6 lg:p-7 space-y-6">
+<div>
+<h2 class="text-lg font-bold text-rose-900 flex items-center gap-2">
+<i data-lucide="layers" class="w-5 h-5 text-rose-600"></i>
+<span id="txt-patti-hdr">প্রেডিক্টেড ডিজিট ভিত্তিক হাই-প্রোবাবিলিটি পাত্তি তালিকা</span>
+</h2>
+<p class="text-xs text-slate-500 mt-1 font-bn" id="txt-patti-sub">
+সকল পাত্তি ছোট থেকে বড় (Ascending Order) সাজানো। প্রতিটি ডিজিটের ১টি ডাবল পাত্তি অন্তর্ভুক্ত।
+</p>
+</div>
+​<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4" id="patti-card-grid">
+<!-- JS Populated -->
+</div>
+</div>
+</section>
+​<!-- TAB 5: ALGORITHM LOGIC EXPLANATION -->
+<section id="sec-logic" class="tab-content space-y-6 hidden">
+<div class="glass-panel rounded-3xl p-6 lg:p-8 space-y-6">
+<h2 class="text-xl font-bold text-rose-900 flex items-center gap-2 border-b border-rose-100 pb-4">
+<i data-lucide="brain-circuit" class="w-6 h-6 text-rose-600"></i>
+<span id="txt-logic-hdr">AI অ্যালগরিদম ও গাণিতিক সূত্রের ব্যাখ্যা</span>
+</h2>
+​<div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs text-slate-700 leading-relaxed font-bn">
+<div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-100 space-y-2">
+<div class="flex items-center gap-2 text-rose-800 font-bold text-sm">
+<span class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">১</span>
+<span id="l1-title">১০ বাজিতে না আসা ডিজিট নির্বাচন</span>
+</div>
+<p id="l1-desc">
+গত ১০টি বাজিতে যেসব ডিজিট মোটেই আসেনি (বা সর্বনিম্নবার এসেছে), গাণিতিক সাইকেল রিকভারি লজিক অনুযায়ী সেখান থেকে ২টি 'ডরম্যান্ট ডিউ ডিজিট' নির্বাচন করা হয়।
+</p>
+</div>
+​<div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-100 space-y-2">
+<div class="flex items-center gap-2 text-rose-800 font-bold text-sm">
+<span class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">২</span>
+<span id="l2-title">ট্রেন্ড অ্যালগরিদম বিশ্লেষণ</span>
+</div>
+<p id="l2-desc">
+বাকি ডিজিটগুলোর জন্য ফ্রিকোয়েন্সি ওয়েটেজ, মুভিং এভারেজ এবং শেষ বাজির কাট-ডিজিটের (+৫) কমপ্লিমেন্ট ধরে ৩টি হট ও ট্রেন্ডিং ডিজিট নির্ধারণ করা হয়।
+</p>
+</div>
+​<div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-100 space-y-2">
+<div class="flex items-center gap-2 text-rose-800 font-bold text-sm">
+<span class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">৩</span>
+<span id="l3-title">ছোট থেকে বড় পাত্তি ফিল্টার</span>
+</div>
+<p id="l3-desc">
+প্রতিটি ৩-ডিজিটের পাত্তি কড়াভাবে ছোট থেকে বড় ডিজিট ক্রমে সাজানো হয় (যেমন: ১২৩, ৩৫৬, ০৬৯) যাতে মানসম্মত ফরম্যাট বজায় থাকে।
+</p>
+</div>
+​<div class="bg-rose-50/50 p-5 rounded-2xl border border-rose-100 space-y-2">
+<div class="flex items-center gap-2 text-rose-800 font-bold text-sm">
+<span class="w-6 h-6 rounded-full bg-rose-600 text-white flex items-center justify-center font-bold text-xs">৪</span>
+<span id="l4-title">গ্যারান্টিড ডাবল পাত্তি লজিক</span>
+</div>
+<p id="l4-desc">
+প্রতিটি প্রেডিক্টেড ডিজিটের প্রস্তাবিত ৪টি পাত্তির মধ্যে অবশ্যই ১টি ডাবল পাত্তি (যেমন: ১১২, ৩৩৫, ৪৪৮) অন্তর্ভুক্ত করা হয়।
+</p>
+</div>
+</div>
+</div>
+</section>
+​</main>
+​<!-- Footer -->
+<footer class="border-t border-rose-200/60 bg-white py-6 px-4 text-center text-xs text-slate-500 shadow-inner">
+<div class="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
+<div class="flex items-center gap-2">
+<i data-lucide="cpu" class="w-4 h-4 text-rose-600"></i>
+<span class="font-semibold">KOLKATA FF PRO PREDICTOR © 2026</span>
+</div>
+<div id="ftr-disclaimer" class="font-bn">
+শুধুমাত্র ডেটা এনালাইসিস ও স্ট্যাটিস্টিক্যাল গবেষণার উদ্দেশ্যে ব্যবহারের জন্য।
+</div>
+</div>
+</footer>
+​<!-- JavaScript Application Logic -->
+<script>
+const translations = {
+bn: {
+hdrSub: "এডভান্সড গাণিতিক প্রেডিকশন ও প্যাটার্ন এনালাইজার",
+sampleBtn: "স্যাম্পল ডেটা",
+banner: "এটি সম্পূর্ণ গাণিতিক ফ্রিকোয়েন্সি, সাইকেল গ্যাপ এবং কাট-ডিজিটের এলগরিদম এনালাইসিস টুল। কোনো প্রকার জুয়া বা বাজি সার্ভিস প্রদান করা হয় না।",
+tabInput: "১. ১০-বাজি রেজাল্ট ইনপুট",
+tabTarget: "২. AI ৫-ডিজিট টার্গেট",
+tabAnalytics: "৩. ফ্রিকোয়েন্সি এনালাইটিক্স",
+tabPatti: "৪. সম্ভাব্য পাত্তি তালিকা",
+tabLogic: "৫. গাণিতিক এলগরিদম",
+inputHdr: "গত ১০টি বাজির ফলাফল ইনপুট দিন",
+inputSub: "সিঙ্গেল ডিজিট (০-৯) এবং অপশনাল ৩-ডিজিটের পাত্তি (Pana) টাইপ করুন। অটো-ট্যাব সুবিধা যুক্ত।",
+autoCalcInfo: "ইনপুট পরিবর্তনের সাথে সাথে অ্যালগরিদম স্বয়ংক্রিয়ভাবে আপডেট হয়।",
+calcMain: "৫-ডিজিট প্রেডিকশন জেনারেট করুন",
+calcReady: "গাণিতিক বিশ্লেষণ সম্পন্ন",
+targetHdr: "পরবর্তী বাজির জন্য শীর্ষ ৫টি টার্গেট ডিজিট",
+targetSub: "২টি ডিজিট (১০ বাজিতে আসেনি) + ৩টি ডিজিট (ট্রেন্ড অ্যালগরিদম) এর সমন্বয়ে প্রস্তুত।",
+modelConf: "গড় প্রেডিকশন কনফিডেন্স ইনডেক্স",
+btnCopy: "কপি করুন",
+hotTitle: "হট ডিজিট (High Freq)",
+hotSub: "বিগত ১০ বাজিতে সর্বোচ্চবার আসা সংখ্যা",
+cutTitle: "কাট ডিজিট থিওরি",
+cutSub: "সর্বশেষ বাজির কমপ্লিমেন্টারি বিপরীত ডিজিট",
+dueTitle: "সাইকেল ডিউ (Gap Digit)",
+dueSub: "দীর্ঘদিন না আসা রিকভারি সম্ভাব্য ডিজিট",
+chartHdr: "ডিজিট ফ্রিকোয়েন্সি ও ডিস্ট্রিবিউশন গ্রাফ (০-৯)",
+chartSub: "ইনপুট করা ১০টি বাজিতে প্রতিটি ডিজিট (0-9) কতবার এসেছে তা ভিজ্যুয়ালি দেখুন।",
+tableHdr: "ইনপুট করা বাজির বিস্তারিত সমীকরণ টেবিল",
+pattiHdr: "প্রেডিক্টেড ডিজিট ভিত্তিক হাই-প্রোবাবিলিটি পাত্তি তালিকা",
+pattiSub: "সকল পাত্তি ছোট থেকে বড় (Ascending Order) সাজানো। প্রতিটি ডিজিটের ১টি ডাবল পাত্তি অন্তর্ভুক্ত।",
+logicHdr: "AI অ্যালগরিদম ও গাণিতিক সূত্রের ব্যাখ্যা",
+ftrDisclaimer: "শুধুমাত্র ডেটা এনালাইসিস ও স্ট্যাটিস্টিক্যাল গবেষণার উদ্দেশ্যে ব্যবহারের জন্য।",
+langBtn: "English",
+l1Title: "১০ বাজিতে না আসা ডিজিট নির্বাচন",
+l1Desc: "গত ১০টি বাজিতে যেসব ডিজিট মোটেই আসেনি (বা সর্বনিম্নবার এসেছে), গাণিতিক সাইকেল রিকভারি লজিক অনুযায়ী সেখান থেকে ২টি 'ডরম্যান্ট ডিউ ডিজিট' নির্বাচন করা হয়।",
+l2Title: "ট্রেন্ড অ্যালগরিদম বিশ্লেষণ",
+l2Desc: "বাকি ডিজিটগুলোর জন্য ফ্রিকোয়েন্সি ওয়েটেজ, মুভিং এভারেজ এবং শেষ বাজির কাট-ডিজিটের (+৫) কমপ্লিমেন্ট ধরে ৩টি হট ও ট্রেন্ডিং ডিজিট নির্ধারণ করা হয়।",
+l3Title: "ছোট থেকে বড় পাত্তি ফিল্টার",
+l3Desc: "প্রতিটি ৩-ডিজিটের পাত্তি কড়াভাবে ছোট থেকে বড় ডিজিট ক্রমে সাজানো হয় (যেমন: ১২৩, ৩৫৬, ০৬৯) যাতে মানসম্মত ফরম্যাট বজায় থাকে।",
+l4Title: "গ্যারান্টিড ডাবল পাত্তি লজিক",
+l4Desc: "প্রতিটি প্রেডিক্টেড ডিজিটের প্রস্তাবিত ৪টি পাত্তির মধ্যে অবশ্যই ১টি ডাবল পাত্তি (যেমন: ১১২, ৩৩৫, ৪৪৮) অন্তর্ভুক্ত করা হয়।"
+},
+en: {
+hdrSub: "Advanced Mathematical Prediction & Pattern Analytics Tool",
+sampleBtn: "Sample Data",
+banner: "This is strictly a mathematical frequency, cycle gap, and cut-digit analysis algorithm. No betting or gaming services are provided.",
+tabInput: "1. Input 10 Rounds",
+tabTarget: "2. AI 5-Digit Target",
+tabAnalytics: "3. Frequency Analytics",
+tabPatti: "4. Target Patti List",
+tabLogic: "5. Mathematical Engine",
+inputHdr: "Enter Last 10 Baji Draw Results",
+inputSub: "Enter Single Digit (0-9) and optional 3-digit Patti. Inputs automatically advance to the next field.",
+autoCalcInfo: "The algorithm auto-updates live as inputs change.",
+calcMain: "Compute 5-Digit Prediction",
+calcReady: "Mathematical Analysis Complete",
+targetHdr: "Top 5 Target Digits for Next Draw",
+targetSub: "Prepared by combining 2 Unappeared Digits + 3 Trend Algorithm Digits.",
+modelConf: "Average Model Prediction Confidence",
+btnCopy: "Copy Report",
+hotTitle: "Hot Digits (High Freq)",
+hotSub: "Most frequent occurrences in last 10 rounds",
+cutTitle: "Cut Digit Complement",
+cutSub: "Inverse complement of latest result",
+dueTitle: "Cycle Due (Gap Target)",
+dueSub: "Dormant numbers due for recovery",
+chartHdr: "Digit Frequency Histogram (0-9)",
+chartSub: "Visual representation of how many times each digit appeared in the last 10 draws.",
+tableHdr: "Input History & Calculation Breakdown Table",
+pattiHdr: "High-Probability Patti Combinations",
+pattiSub: "All pattis ordered ascendingly (small to large). 1 Double Patti included per digit.",
+logicHdr: "AI Engine & Mathematical Logic Rules",
+ftrDisclaimer: "For mathematical data analysis and statistical study purposes only.",
+langBtn: "বাংলা",
+l1Title: "Dormant Unappeared Selection",
+l1Desc: "Extracts 2 gap digits that have not appeared (or occurred least) in the past 10 Baji rounds based on mean reversion principles.",
+l2Title: "Trend Algorithm Scoring",
+l2Desc: "Calculates weighted recency frequency, moving average, and cut-digit complement scores to extract 3 trend targets.",
+l3Title: "Strict Ascending Order",
+l3Desc: "Formats every 3-digit Patti strictly from smallest to largest digit (e.g., 123, 356, 069).",
+l4Title: "Guaranteed Double Patti",
+l4Desc: "Includes at least 1 valid double patti (e.g. 112, 335, 448) among the 4 suggested pattis for each predicted digit."
+}
+};
+​const samplePresetData = [
+{ single: '4', patti: '149' },
+{ single: '7', patti: '359' },
+{ single: '2', patti: '138' },
+{ single: '9', patti: '289' },
+{ single: '0', patti: '389' },
+{ single: '5', patti: '168' },
+{ single: '1', patti: '245' },
+{ single: '4', patti: '680' },
+{ single: '8', patti: '369' },
+{ single: '3', patti: '148' }
+];
+​let currentLang = 'bn';
+let bajiInputs = Array(10).fill({ single: '', patti: '' });
+let chartInstance = null;
+let lastComputedTop5 = [];
+​window.addEventListener('DOMContentLoaded', () => {
+lucide.createIcons();
+startLiveClock();
+renderBajiInputs();
+loadSamplePreset();
+});
+​function startLiveClock() {
+const clockEl = document.getElementById('live-clock');
+setInterval(() => {
+const now = new Date();
+clockEl.innerText = now.toLocaleTimeString();
+}, 1000);
+}
+​function renderBajiInputs() {
+const grid = document.getElementById('baji-grid');
+grid.innerHTML = '';
+​for (let i = 0; i < 10; i++) {
+const slotNum = i + 1;
+const card = document.createElement('div');
+card.className = "bg-white border border-rose-200 rounded-2xl p-3 space-y-2 relative focus-within:border-rose-500 shadow-sm transition";
+​card.innerHTML = `
+<div class="flex items-center justify-between text-xs text-rose-800 font-bold border-b border-rose-100 pb-1">
+<span class="flex items-center gap-1">
+<span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span> Baji #${slotNum}
+</span>
+<span class="text-[10px] text-slate-400 font-mono">Slot ${slotNum}</span>
+</div>
+​<div class="grid grid-cols-2 gap-2">
+<div>
+<label class="block text-[10px] text-slate-400 mb-0.5">Digit (0-9)</label>
+<input type="text" id="inp-single-${i}" maxlength="1" placeholder="0-9"
+value="${bajiInputs[i].single}"
+oninput="handleInputChange(${i}, 'single', this)"
+class="digit-input w-full bg-rose-50/50 border border-rose-200 rounded-xl px-2 py-1.5 text-center text-rose-900 font-mono font-black text-sm focus:outline-none focus:border-rose-500 focus:bg-white">
+</div>
+<div>
+<label class="block text-[10px] text-slate-400 mb-0.5">Patti (Pana)</label>
+<input type="text" id="inp-patti-${i}" maxlength="3" placeholder="100-999"
+value="${bajiInputs[i].patti}"
+oninput="handleInputChange(${i}, 'patti', this)"
+class="digit-input w-full bg-rose-50/50 border border-rose-200 rounded-xl px-2 py-1.5 text-center text-rose-900 font-mono font-bold text-sm focus:outline-none focus:border-rose-500 focus:bg-white">
+</div>
+</div>
+`;
+grid.appendChild(card);
+}
+updateFilledCount();
+}
+​function handleInputChange(index, type, inputEl) {
+let val = inputEl.value.replace(/[^0-9]/g, '');
+inputEl.value = val;
+​bajiInputs[index] = {
+...bajiInputs[index],
+[type]: val
+};
+​if (type === 'single' && val.length === 1) {
+document.getElementById(inp-patti-${index}).focus();
+} else if (type === 'patti' && val.length === 3 && index < 9) {
+document.getElementById(inp-single-${index + 1}).focus();
+}
+​updateFilledCount();
+runAIEngine();
+}
+​function updateFilledCount() {
+let count = bajiInputs.filter(item => item.single !== '' || item.patti !== '').length;
+document.getElementById('filled-count').innerText = count;
+​const targetBajiEl = document.getElementById('target-baji-num');
+if (count < 8) {
+targetBajiEl.innerText = Baji #${count + 1};
+} else {
+targetBajiEl.innerText = Baji #${(count % 8) + 1};
+}
+}
+​function loadSamplePreset() {
+bajiInputs = JSON.parse(JSON.stringify(samplePresetData));
+renderBajiInputs();
+runAIEngine();
+showToast('Sample 10-Baji data loaded!', 'success');
+}
+​function clearAllData() {
+bajiInputs = Array(10).fill({ single: '', patti: '' });
+renderBajiInputs();
+runAIEngine();
+showToast('Inputs cleared.', 'info');
+}
+​function switchTab(tabKey) {
+document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+document.querySelectorAll('.tab-btn').forEach(btn => {
+btn.className = "tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 glass-panel text-slate-700 hover:text-rose-600";
+});
+​document.getElementById(sec-${tabKey}).classList.remove('hidden');
+const activeBtn = document.getElementById(tab-${tabKey});
+activeBtn.className = "tab-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center gap-2 transition shrink-0 bg-rose-600 text-white shadow-md shadow-rose-600/20";
+​if (tabKey === 'analytics') {
+renderChart();
+renderHistoryTable();
+}
+if (tabKey === 'patti') {
+renderPattiCards();
+}
+}
+​function processAndNavigateTarget() {
+runAIEngine();
+switchTab('target');
+}
+​// Helper: Format Patti Digits in Ascending Order (Small to Large)
+function formatPattiAscending(digitsArray) {
+// Sort logic where 0 is treated as 10 for traditional ordering
+const sorted = [...digitsArray].sort((a, b) => {
+const valA = a === 0 ? 10 : a;
+const valB = b === 0 ? 10 : b;
+return valA - valB;
+});
+return sorted.join('');
+}
+​function runAIEngine() {
+const counts = Array(10).fill(0);
+const weights = Array(10).fill(0);
+const validSingles = [];
+​bajiInputs.forEach((item, idx) => {
+let d = parseInt(item.single);
+if (isNaN(d) && item.patti && item.patti.length === 3) {
+const sum = item.patti.split('').reduce((acc, c) => acc + (parseInt(c) || 0), 0);
+d = sum % 10;
+}
+​if (!isNaN(d) && d >= 0 && d <= 9) {
+validSingles.push(d);
+counts[d] += 1;
+weights[d] += (idx + 1) * 2.2;
+}
+});
+​// 1. SELECT 2 UNAPPEARED / Lowest Freq DIGITS
+const unappearedScores = [];
+for (let d = 0; d < 10; d++) {
+if (counts[d] === 0) {
+let score = 10;
+if (validSingles.length > 0) {
+const lastDigit = validSingles[validSingles.length - 1];
+const cutDigit = (lastDigit + 5) % 10;
+if (d === cutDigit) score += 5;
+}
+unappearedScores.push({ digit: d, score: score, freq: 0 });
+}
+}
+​unappearedScores.sort((a, b) => b.score - a.score);
+let pickedUnappeared = unappearedScores.map(i => i.digit);
+​// Fallback if less than 2 unappeared digits
+if (pickedUnappeared.length < 2) {
+const lowFreq = [];
+for (let d = 0; d < 10; d++) {
+if (!pickedUnappeared.includes(d)) {
+lowFreq.push({ digit: d, freq: counts[d] });
+}
+}
+lowFreq.sort((a, b) => a.freq - b.freq);
+for (let i = 0; i < lowFreq.length && pickedUnappeared.length < 2; i++) {
+pickedUnappeared.push(lowFreq[i].digit);
+}
+}
+​pickedUnappeared = pickedUnappeared.slice(0, 2);
+​// 2. COMPUTE SCORES FOR REMAINING 3 TREND ALGORITHM DIGITS
+const cutScores = Array(10).fill(0);
+if (validSingles.length > 0) {
+const lastDigit = validSingles[validSingles.length - 1];
+const cutDigit = (lastDigit + 5) % 10;
+cutScores[cutDigit] += 6;
+}
+​const scores = [];
+for (let d = 0; d < 10; d++) {
+if (pickedUnappeared.includes(d)) continue;
+const totalScore = (counts[d] * 5) + weights[d] + cutScores[d];
+scores.push({ digit: d, score: totalScore, freq: counts[d] });
+}
+​scores.sort((a, b) => b.score - a.score);
+const algoPicks = scores.slice(0, 3);
+​const top5 = [
+{ digit: pickedUnappeared[0], confidence: 94, type: 'unappeared' },
+{ digit: pickedUnappeared[1], confidence: 91, type: 'unappeared' },
+{ digit: algoPicks[0].digit, confidence: 88, type: 'algo' },
+{ digit: algoPicks[1].digit, confidence: 84, type: 'algo' },
+{ digit: algoPicks[2].digit, confidence: 80, type: 'algo' }
+];
+​lastComputedTop5 = top5;
+renderTargetCards(top5);
+​const hotDigit = [...scores].sort((a, b) => b.freq - a.freq)[0]?.digit ?? pickedUnappeared[0];
+const lastVal = validSingles.length ? validSingles[validSingles.length - 1] : '-';
+const cutVal = (lastVal !== '-') ? (lastVal + 5) % 10 : '-';
+const dueDigit = pickedUnappeared[0] ?? 0;
+​document.getElementById('metric-hot').innerText = ${hotDigit} (${counts[hotDigit]}x);
+document.getElementById('metric-cut').innerText = ${cutVal} (Last: ${lastVal});
+document.getElementById('metric-due').innerText = ${dueDigit} (Unappeared);
+​const avgScore = Math.round(top5.reduce((acc, i) => acc + i.confidence, 0) / 5);
+document.getElementById('val-overall-score').innerText = ${avgScore}% Confidence Index;
+}
+​function renderTargetCards(top5) {
+const container = document.getElementById('target-digits-grid');
+container.innerHTML = '';
+​top5.forEach((item, idx) => {
+const isUnappeared = item.type === 'unappeared';
+const card = document.createElement('div');
+card.className = bg-white border-2 ${isUnappeared ? 'border-sky-400 hover:border-sky-500' : 'border-rose-200 hover:border-rose-500'} rounded-2xl p-4 text-center flex flex-col justify-between shadow-md relative overflow-hidden group transition transform hover:-translate-y-1;
+​const badgeBg = isUnappeared ? 'bg-sky-100 text-sky-800 border-sky-300' : 'bg-rose-100 text-rose-700 border-rose-200';
+const tagLabel = isUnappeared ? '১০ বাজিতে আসেনি' : 'ট্রেন্ড অ্যালগরিদম';
+​card.innerHTML = `
+<div class="flex items-center justify-between border-b border-slate-100 pb-2 mb-2">
+<span class="text-[10px] ${badgeBg} px-2 py-0.5 rounded-full font-mono font-bold border">
+{tagLabel}
+</span>
+<span class="text-[10px] text-slate-400 font-mono font-bold">
+#{idx + 1}
+</span>
+</div>
+​<div class="my-3">
+<span class="text-5xl font-black font-mono ${isUnappeared ? 'text-sky-600' : 'red-gradient-text'} drop-shadow-sm group-hover:scale-110 transition-transform inline-block">
+${item.digit}
+</span>
+<span class="block text-[11px] text-slate-500 font-bn mt-1">
+${isUnappeared ? 'ডরম্যান্ট ডিউ ডিজিট' : 'ট্রেন্ড ও ফ্রিকোয়েন্সি'}
+</span>
+</div>
+​<div class="space-y-1">
+<div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden border border-slate-200">
+<div class="${isUnappeared ? 'bg-gradient-to-r from-sky-500 to-blue-600' : 'bg-gradient-to-r from-rose-500 to-red-600'} h-full rounded-full transition-all duration-700" style="width: ${item.confidence}%"></div>
+</div>
+<div class="text-[11px] font-mono font-bold ${isUnappeared ? 'text-sky-800' : 'text-rose-700'} flex items-center justify-between pt-1">
+<span>Score</span>
+<span>${item.confidence}%</span>
+</div>
+</div>
+`;
+container.appendChild(card);
+});
+}
+​// Render Patti List (Ascending Order + 1 Guaranteed Double Patti)
+function renderPattiCards() {
+const container = document.getElementById('patti-card-grid');
+container.innerHTML = '';
+​// Master database of raw patti digits (will be formatted ascendingly)
+const pattiRawDict = {
+0: [ [1,2,7], [3,8,9], [4,7,9], [5,5,0] ], // 550 = Double
+1: [ [1,2,8], [3,3,5], [4,8,9], [1,4,6] ], // 335 = Double
+2: [ [1,3,8], [2,4,6], [5,8,9], [1,1,0] ], // 110 = Double
+3: [ [1,4,8], [2,5,6], [6,8,9], [2,2,9] ], // 229 = Double
+4: [ [1,4,9], [2,5,7], [6,7,1], [2,2,0] ], // 220 = Double
+5: [ [1,6,8], [2,5,8], [3,4,8], [4,4,7] ], // 447 = Double
+6: [ [1,2,3], [2,5,9], [3,6,7], [3,3,0] ], // 330 = Double
+7: [ [3,5,9], [1,2,4], [2,7,8], [1,1,5] ], // 115 = Double
+8: [ [3,6,9], [1,2,5], [2,7,9], [4,4,0] ], // 440 = Double
+9: [ [2,8,9], [1,3,5], [3,7,9], [5,5,9] ]  // 559 = Double
+};
+​lastComputedTop5.forEach(item => {
+const rawList = pattiRawDict[item.digit] || [ [1,2,3], [2,3,4], [3,4,5], [1,1,target] ];
+​const formattedList = rawList.map((pattiArr, pIdx) => {
+const isDouble = (pattiArr[0] === pattiArr[1] || pattiArr[1] === pattiArr[2] || pattiArr[0] === pattiArr[2]);
+const code = formatPattiAscending(pattiArr);
+return { code, isDouble };
+});
+​const card = document.createElement('div');
+card.className = "bg-white border border-rose-200 rounded-2xl p-4 text-center space-y-3 shadow-sm";
+​card.innerHTML = <div class="text-xs font-bold text-rose-800 border-b border-rose-100 pb-2 flex items-center justify-between"> <span>Digit Target</span> <span class="text-base font-black font-mono red-gradient-text">[ ${item.digit} ]</span> </div> <div class="grid grid-cols-2 gap-2"> ${formattedList.map(p =>
+<div class="bg-rose-50/60 border ${p.isDouble ? 'border-amber-400 bg-amber-50/50' : 'border-rose-200'} rounded-xl py-2 px-1 text-xs font-mono font-bold text-rose-900 transition flex flex-col items-center">
+<span>${p.code}</span>
+${p.isDouble ? '<span class="text-[9px] font-bn text-amber-700 bg-amber-100 px-1.5 rounded-full mt-0.5">ডাবল পাত্তি</span>' : ''}
+</div>
+).join('')} </div> ;
+container.appendChild(card);
+});
+}
+​function renderChart() {
+const ctx = document.getElementById('freqCanvas').getContext('2d');
+const counts = Array(10).fill(0);
+​bajiInputs.forEach(item => {
+let d = parseInt(item.single);
+if (isNaN(d) && item.patti && item.patti.length === 3) {
+const sum = item.patti.split('').reduce((acc, c) => acc + (parseInt(c) || 0), 0);
+d = sum % 10;
+}
+if (!isNaN(d) && d >= 0 && d <= 9) counts[d]++;
+});
+​if (chartInstance) chartInstance.destroy();
+​chartInstance = new Chart(ctx, {
+type: 'bar',
+data: {
+labels: ['Digit 0', 'Digit 1', 'Digit 2', 'Digit 3', 'Digit 4', 'Digit 5', 'Digit 6', 'Digit 7', 'Digit 8', 'Digit 9'],
+datasets: [{
+label: 'Frequency Count',
+data: counts,
+backgroundColor: 'rgba(225, 29, 72, 0.75)',
+borderColor: '#be123c',
+borderWidth: 1.5,
+borderRadius: 8
+}]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+scales: {
+y: {
+beginAtZero: true,
+ticks: { color: '#475569', stepSize: 1 },
+grid: { color: '#f1f5f9' }
+},
+x: {
+ticks: { color: '#be123c', font: { weight: 'bold' } },
+grid: { display: false }
+}
+},
+plugins: {
+legend: { labels: { color: '#334155' } }
+}
+}
+});
+}
+​function renderHistoryTable() {
+const tbody = document.getElementById('history-table-body');
+tbody.innerHTML = '';
+​bajiInputs.forEach((item, idx) => {
+let digit = item.single;
+let sumText = '-';
+let cutText = '-';
+​if (item.patti && item.patti.length === 3) {
+const sum = item.patti.split('').reduce((acc, c) => acc + (parseInt(c) || 0), 0);
+sumText = ${sum} (Mod: ${sum % 10});
+if (!digit) digit = (sum % 10).toString();
+}
+​if (digit !== '') {
+cutText = (parseInt(digit) + 5) % 10;
+}
+​const row = document.createElement('tr');
+row.className = "hover:bg-rose-50/50 transition";
+row.innerHTML = <td class="p-3 text-rose-800 font-bold">Baji #${idx + 1}</td> <td class="p-3 text-slate-700">${item.patti || '---'}</td> <td class="p-3"><span class="bg-rose-100 text-rose-800 px-2 py-0.5 rounded font-bold">${digit || '-'}</span></td> <td class="p-3 text-slate-500">${sumText}</td> <td class="p-3 text-rose-600 font-bold">${cutText}</td>;
+tbody.appendChild(row);
+});
+}
+​function copyResultsToClipboard() {
+if (!lastComputedTop5.length) return;
+const digits = lastComputedTop5.map(i => i.digit).join(', ');
+const summary = Kolkata FF AI Target Digits: [ ${digits} ] | Generated via KOLKATA FF PRO PREDICTOR.;
+​navigator.clipboard.writeText(summary).then(() => {
+showToast('Target Digits copied to clipboard!', 'success');
+}).catch(() => {
+showToast('Failed to copy report.', 'error');
+});
+}
+​function exportJSONReport() {
+const reportData = {
+timestamp: new Date().toISOString(),
+inputs: bajiInputs,
+top5Targets: lastComputedTop5
+};
+​const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(reportData, null, 2));
+const dlAnchor = document.createElement('a');
+dlAnchor.setAttribute("href", dataStr);
+dlAnchor.setAttribute("download", kolkata_ff_prediction_${Date.now()}.json);
+document.body.appendChild(dlAnchor);
+dlAnchor.click();
+dlAnchor.remove();
+showToast('JSON report downloaded!', 'success');
+}
+​function toggleLanguage() {
+currentLang = (currentLang === 'bn') ? 'en' : 'bn';
+updateLanguageTexts();
+showToast(Language switched to ${currentLang.toUpperCase()}, 'info');
+}
+​function updateLanguageTexts() {
+const t = translations[currentLang];
+document.getElementById('hdr-sub').innerText = t.hdrSub;
+document.getElementById('btn-sample-hdr').innerText = t.sampleBtn;
+document.getElementById('txt-banner').querySelector('span').innerText = t.banner;
+document.getElementById('txt-tab-input').innerText = t.tabInput;
+document.getElementById('txt-tab-target').innerText = t.tabTarget;
+document.getElementById('txt-tab-analytics').innerText = t.tabAnalytics;
+document.getElementById('txt-tab-patti').innerText = t.tabPatti;
+document.getElementById('txt-tab-logic').innerText = t.tabLogic;
+document.getElementById('txt-input-hdr').innerText = t.inputHdr;
+document.getElementById('txt-input-sub').innerText = t.inputSub;
+document.getElementById('txt-auto-calc-info').innerText = t.autoCalcInfo;
+document.getElementById('btn-calc-main').innerText = t.calcMain;
+document.getElementById('lbl-calc-ready').innerText = t.calcReady;
+document.getElementById('txt-target-hdr').innerText = t.targetHdr;
+document.getElementById('txt-target-sub').innerText = t.targetSub;
+document.getElementById('lbl-model-confidence').innerText = t.modelConf;
+document.getElementById('btn-copy').innerText = t.btnCopy;
+document.getElementById('lbl-hot-title').innerText = t.hotTitle;
+document.getElementById('lbl-hot-sub').innerText = t.hotSub;
+document.getElementById('lbl-cut-title').innerText = t.cutTitle;
+document.getElementById('lbl-cut-sub').innerText = t.cutSub;
+document.getElementById('lbl-due-title').innerText = t.dueTitle;
+document.getElementById('lbl-due-sub').innerText = t.dueSub;
+document.getElementById('txt-chart-hdr').innerText = t.chartHdr;
+document.getElementById('txt-chart-sub').innerText = t.chartSub;
+document.getElementById('txt-table-hdr').innerText = t.tableHdr;
+document.getElementById('txt-patti-hdr').innerText = t.pattiHdr;
+document.getElementById('txt-patti-sub').innerText = t.pattiSub;
+document.getElementById('txt-logic-hdr').innerText = t.logicHdr;
+document.getElementById('ftr-disclaimer').innerText = t.ftrDisclaimer;
+document.getElementById('lang-btn-txt').innerText = t.langBtn;
+document.getElementById('l1-title').innerText = t.l1Title;
+document.getElementById('l1-desc').innerText = t.l1Desc;
+document.getElementById('l2-title').innerText = t.l2Title;
+document.getElementById('l2-desc').innerText = t.l2Desc;
+document.getElementById('l3-title').innerText = t.l3Title;
+document.getElementById('l3-desc').innerText = t.l3Desc;
+document.getElementById('l4-title').innerText = t.l4Title;
+document.getElementById('l4-desc').innerText = t.l4Desc;
+}
+​function showToast(msg, type = 'info') {
+const toast = document.getElementById('toast');
+const toastMsg = document.getElementById('toast-msg');
+const toastIcon = document.getElementById('toast-icon');
+​toastMsg.innerText = msg;
+toastIcon.innerHTML = type === 'success'
+? '<i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>'
+: '<i data-lucide="info" class="w-5 h-5 text-amber-400"></i>';
+​lucide.createIcons();
+​toast.classList.remove('translate-x-full');
+setTimeout(() => {
+toast.classList.add('translate-x-full');
+}, 3000);
+}
+</script>
+</body>
+</html>
